@@ -1,0 +1,25 @@
+name: Azure Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Azure resources
+        run: |
+          az group create --name myResourceGroup --location eastus
+          az deployment group create --resource-group myResourceGroup --template-file azuredeploy.json
